@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueberry Factory Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Blueberry Factory Management System</h1>
+        <nav>
+            <ul>
+                <li><a href="#supplier-management">Supplier Management</a></li>
+                <li><a href="#product-categorization">Product Categorization</a></li>
+                <li><a href="#sales-management">Sales Management</a></li>
+                <li><a href="#inventory-management">Inventory Management</a></li>
+                <li><a href="#financial-analysis">Financial Analysis</a></li>
+                <li><a href="#comprehensive-report">Comprehensive Report</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Supplier Management Section -->
+        <section id="supplier-management">
+            <h2>Supplier Management</h2>
+            <form id="add-supplier-form">
+                <h3>Add Supplier</h3>
+                <label for="supplier-id">Farmer ID:</label>
+                <input type="text" id="supplier-id" name="supplier-id" value="1000" readonly>
+
+                <label for="supplier-name">Name:</label>
+                <input type="text" id="supplier-name" name="supplier-name" required>
+
+                <label for="supplier-contact">Contact:</label>
+                <input type="text" id="supplier-contact" name="supplier-contact" required>
+
+                <label for="supplier-location">Location:</label>
+                <input type="text" id="supplier-location" name="supplier-location" required>
+
+                <button type="submit">Add Supplier</button>
+            </form>
+        </section>
+
+        <!-- Product Categorization Section -->
+        <section id="product-categorization">
+            <h2>Product Categorization</h2>
+            <form id="categorize-product-form">
+                <h3>Categorize Blueberries</h3>
+                <label for="category">Select Category:</label>
+                <select id="category" name="category"></select>
+
+                <label for="quantity">Quantity (kg):</label>
+                <input type="number" id="quantity" name="quantity" required>
+
+                <button type="submit">Categorize</button>
+            </form>
+        </section>
+
+        <!-- Sales Management Section -->
+        <section id="sales-management">
+            <h2>Sales Management</h2>
+            <form id="add-sale-form">
+                <h3>Record Sale</h3>
+                <label for="customer-name">Customer Name:</label>
+                <input type="text" id="customer-name" name="customer-name" required>
+
+                <label for="customer-contact">Contact:</label>
+                <input type="text" id="customer-contact" name="customer-contact" required>
+
+                <label for="sale-category">Product Category:</label>
+                <select id="sale-category" name="sale-category"></select>
+
+                <label for="sale-quantity">Quantity:</label>
+                <input type="number" id="sale-quantity" name="sale-quantity" required>
+
+                <button type="submit">Record Sale</button>
+            </form>
+        </section>
+
+        <!-- Inventory Management Section -->
+        <section id="inventory-management">
+            <h2>Inventory Management</h2>
+            <button id="view-inventory">View Inventory</button>
+            <div id="inventory-details">Loading inventory data...</div>
+
+            <button id="generate-inventory-report">Generate Inventory Report</button>
+            <div id="inventory-report-output"></div>
+        </section>
+
+        <!-- Financial Analysis Section -->
+        <section id="financial-analysis">
+            <h2>Financial Analysis</h2>
+            <button id="generate-financial-report">Generate Financial Report</button>
+            <div id="financial-report"></div>
+        </section>
+
+        <!-- Comprehensive Report Section -->
+        <section id="comprehensive-report">
+            <h2>Comprehensive Report</h2>
+            <button id="generate-comprehensive-report">Generate Comprehensive Report</button>
+            <div id="comprehensive-report-output"></div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section id="alerts">
+            <h2>Alerts & Notifications</h2>
+            <button id="check-restock-alerts">Check Restock Alerts</button>
+            <div id="alerts-output">No alerts to display.</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Blueberry Factory Management System</p>
+    </footer>
+
+    <script type="module" src="supplier.js"></script>
+    <script type="module" src="productCategorization.js"></script>
+    <script type="module" src="salesManagement.js"></script>
+    <script type="module" src="inventoryManagement.js"></script>
+    <script type="module" src="financialAnalysis.js"></script>
+    <script type="module" src="comprehensiveReport.js"></script>
+
+    <script>
+        // Automatically Increment Supplier ID
+        const supplierForm = document.getElementById('add-supplier-form');
+        let currentID = localStorage.getItem('currentID') ? parseInt(localStorage.getItem('currentID')) : 1000;
+
+        document.getElementById('supplier-id').value = currentID;
+
+        supplierForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            currentID += 1;
+            localStorage.setItem('currentID', currentID);
+            alert(`Supplier with ID ${currentID - 1} added successfully!`);
+            supplierForm.reset();
+            document.getElementById('supplier-id').value = currentID;
+        });
+
+        // Dynamic Inventory Update
+        document.getElementById('view-inventory').addEventListener('click', function () {
+            const inventoryDetails = document.getElementById('inventory-details');
+            const inventoryData = [
+                { category: 'Fresh', quantity: 100, reorderLevel: 20 },
+                { category: 'Frozen', quantity: 50, reorderLevel: 15 },
+                { category: 'Organic', quantity: 30, reorderLevel: 10 }
+            ];
+
+            inventoryDetails.innerHTML = inventoryData.length > 0
+                ? inventoryData.map(item => `<p>${item.category}: ${item.quantity}kg (Reorder Level: ${item.reorderLevel}kg)</p>`).join('')
+                : '<p>No inventory data available.</p>';
+        });
+
+        // Populate Dynamic Categories
+        function populateCategories() {
+            const categories = [
+                { value: "small", label: "Small (100g)" },
+                { value: "medium", label: "Medium (250g)" },
+                { value: "large", label: "Large (500g)" },
+                { value: "extra-large", label: "Extra Large (1kg)" },
+                { value: "family", label: "Family Pack (2kg)" },
+                { value: "bulk", label: "Bulk Pack (5kg)" },
+                { value: "premium", label: "Premium (Custom)" }
+            ];
+
+            const categorySelects = document.querySelectorAll("select[name='category'], select[name='sale-category']");
+
+            categorySelects.forEach(select => {
+                select.innerHTML = categories.map(cat => `<option value="${cat.value}">${cat.label}</option>`).join('');
+            });
+        }
+
+        // Populate categories on page load
+        document.addEventListener('DOMContentLoaded', populateCategories);
+
+        // Handle Alerts
+        document.getElementById('check-restock-alerts').addEventListener('click', function () {
+            const alertsOutput = document.getElementById('alerts-output');
+            const inventoryData = [
+                { category: 'Fresh', quantity: 100, reorderLevel: 20 },
+                { category: 'Frozen', quantity: 10, reorderLevel: 15 },
+                { category: 'Organic', quantity: 5, reorderLevel: 10 }
+            ];
+
+            const alerts = inventoryData
+                .filter(item => item.quantity < item.reorderLevel)
+                .map(item => `<p>Restock needed for ${item.category}: Current Stock = ${item.quantity}kg</p>`);
+
+            alertsOutput.innerHTML = alerts.length > 0 ? alerts.join('') : '<p>All stock levels are sufficient.</p>';
+        });
+    </script>
+</body>
+</html>
